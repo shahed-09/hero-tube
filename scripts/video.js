@@ -1,3 +1,22 @@
+// common time function
+function showtime(time) {
+  const day = parseInt(time / 86400);
+  const remainingSecond = time % 86400;
+  const hour = parseInt(remainingSecond / 3600);
+  const remainingSecond2 = remainingSecond % 3600;
+  const minute = parseInt(remainingSecond2 / 60);
+  const seconds = remainingSecond2 % 60;
+  return `${day}day ${hour}hour ${minute}minute and ${seconds}seconds ago`;
+}
+
+// load category videos
+const loadCategoryVideos = (id) => {
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category))
+    .catch((error) => console.log("Error occured"));
+};
+
 // load catagories
 const loadCategories = () => {
   fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
@@ -6,13 +25,16 @@ const loadCategories = () => {
     .catch((error) => console.log("failed", error));
 };
 // display catagories
-const btnContianer = document.getElementById("categories-btn");
+const btnContainer = document.getElementById("categories-btn");
 const displayCategories = (categories) => {
   categories.forEach((item) => {
-    const button = document.createElement("button");
-    button.classList = "btn";
-    button.innerText = item.category;
-    btnContianer.appendChild(button);
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML = `
+    <button onclick="loadCategoryVideos(${item.category_id})" class="btn p-3 ">
+    ${item.category}
+    </button>
+    `;
+    btnContainer.appendChild(buttonContainer);
   });
 };
 
@@ -28,6 +50,10 @@ const loadVideos = () => {
 // display videos
 const videoBox = document.getElementById("video-box");
 const displayVideos = (videos) => {
+  videoBox.innerHTML = "";
+  if(videos.length == ){
+    
+  }
   videos.forEach((video) => {
     const card = document.createElement("div");
     card.classList = "card ";
@@ -38,7 +64,9 @@ const displayVideos = (videos) => {
       ${
         video.others.posted_date?.length == 0
           ? ""
-          : `<span  class="absolute right-2 bottom-2 bg-black text-white rounded-lg p-1">${video.others.posted_date}</span>`
+          : `<span  class="absolute text-xs right-2 bottom-2 bg-black text-white rounded-lg p-1">${showtime(
+              video.others.posted_date
+            )}</span>`
       }
       
   </figure>
@@ -62,26 +90,7 @@ const displayVideos = (videos) => {
   </div>
    `;
     videoBox.appendChild(card);
-    console.log(video.authors);
   });
 };
 
 loadVideos();
-
-//     "category_id": "1003",
-//     "video_id": "aaae",
-//     "thumbnail": "https://i.ibb.co/Yc4p5gD/inside-amy.jpg",
-//     "title": "Inside Amy Schumer",
-//     "authors": [
-//         {
-//             "profile_picture": "https://i.ibb.co/YD2mqH7/amy.jpg",
-//             "profile_name": "Amy Schumer",
-//             "verified": ""
-//         }
-//     ],
-//     "others": {
-//         "views": "3.6K",
-//         "posted_date": "15147"
-//     },
-//     "description": "'Inside Amy Schumer' is a comedy show by the popular comedian Amy Schumer, blending sharp satire and unfiltered humor to tackle everyday issues and societal norms. With 3.6K views, the show promises a blend of hilarious sketches, thought-provoking stand-up, and candid interviews. It's a must-watch for fans of bold, edgy comedy."
-// }
